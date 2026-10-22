@@ -1,0 +1,17 @@
+# Usar una imagen base ligera de Node.js
+FROM node:18-alpine
+
+# Definir el directorio de trabajo dentro del contenedor
+WORKDIR /usr/src/app
+
+# Copiar los archivos de dependencias
+COPY package*.json ./
+
+# Instalación limpia de dependencias (fase de compilación)
+RUN npm ci --only=production
+
+# Copiar todo el código fuente del microservicio
+COPY . .
+
+# Comando para arrancar el microservicio
+CMD ["node", "src/app.js"]

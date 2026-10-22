@@ -1,8 +1,6 @@
 # ms.restaurante - Sistema de Gestión de Restaurante
 
-## Integrantes
-* Silvana Cardona Zapata
-* Michael Rivera
+## Estudiante
 * Juan Alejandro Cano
 
 ## Problema
