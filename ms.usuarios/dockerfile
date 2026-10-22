@@ -14,4 +14,4 @@ RUN npm ci --only=production
 COPY . .
 
 # Comando para arrancar el microservicio
-CMD ["node", "src/app.js"]
+CMD ["node", "src/app.js"] 
