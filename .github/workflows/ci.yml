@@ -1,4 +1,4 @@
-name: CI/CD Pipeline - Proyecto Restaurante
+name: CI/CD Pipeline - Microservicio Menu
 
 on:
   push:
@@ -8,44 +8,33 @@ on:
 jobs:
   build-and-push:
     runs-on: ubuntu-latest
+
     steps:
-      - name: Checkout del codigo
+      - name: Checkout del código
         uses: actions/checkout@v3
 
-      - name: Autenticacion en Docker Hub
+      - name: Configurar Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+
+      - name: Compilación e instalación de dependencias
+        run: |
+          cd ms.menu
+          npm ci
+
+      - name: Autenticación en Docker Hub
         uses: docker/login-action@v2
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      - name: Build y Push ms.menu
+      - name: Construir y publicar imagen Docker
         uses: docker/build-push-action@v4
         with:
           context: ./ms.menu
           file: ./ms.menu/Dockerfile
           push: true
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/ms-menu:latest
-
-      - name: Build y Push ms.pedidos
-        uses: docker/build-push-action@v4
-        with:
-          context: ./ms.pedidos
-          file: ./ms.pedidos/Dockerfile
-          push: true
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/ms-pedidos:latest
-
-      - name: Build y Push ms.usuarios
-        uses: docker/build-push-action@v4
-        with:
-          context: ./ms.usuarios
-          file: ./ms.usuarios/Dockerfile
-          push: true
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/ms-usuarios:latest
-
-      - name: Build y Push API Gateway
-        uses: docker/build-push-action@v4
-        with:
-          context: ./gateway
-          file: ./gateway/Dockerfile
-          push: true
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/api-gateway:latest
+          tags: |
+            ${{ secrets.DOCKERHUB_USERNAME }}/ms-menu:latest
+            ${{ secrets.DOCKERHUB_USERNAME }}/ms-menu:${{ github.sha }}
